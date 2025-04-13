@@ -1,6 +1,7 @@
 from turtle import Screen
 from paddle import Paddle
 from ball import Ball
+from scoreboard import ScoreBoard
 import time
 
 
@@ -15,6 +16,7 @@ screen.tracer(0)
 right_paddle = Paddle()
 left_paddle = Paddle()
 ball = Ball()
+scoreboard = ScoreBoard()
 
 right_paddle.init_position(scr_width / 2 - 30)
 left_paddle.init_position(-(scr_width / 2 - 30))
@@ -25,10 +27,12 @@ screen.onkey(right_paddle.go_down, "Down")
 screen.onkey(left_paddle.go_up, "w")
 screen.onkey(left_paddle.go_down, "s")
 
+ball_speed = 0.002
+
 while True:
     screen.update()
     ball.move()
-    time.sleep(0.002)
+    time.sleep(ball.speeding)
 
     # detect wall collision
     if abs(ball.ycor()) > scr_height / 2 - 10:
@@ -39,12 +43,14 @@ while True:
        and abs(ball.xcor()) > scr_width / 2 - 50):
         ball.paddle_bounce()
 
+    # right misses
+    if ball.xcor() > scr_width / 2:
+        ball.reset_position()
+        scoreboard.l_scores()
 
-
-
-
-
-
-
+    # left misses
+    if ball.xcor() < -(scr_width / 2):
+        ball.reset_position()
+        scoreboard.r_scores()
 
 screen.exitonclick()
